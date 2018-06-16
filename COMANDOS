@@ -1,5 +1,7 @@
 Primera vez..
-
+-Instalas git
+Linux: sudo apt install git
+Windows: desde la página github se puede bajar bash creo
 -Te moves a tu carpeta te TP Algebra
 git init                  ---> Inicia git en esa carpeta
 git clone https://github.com/javivera/algebraTP --> Bajar la repo (se baja una carpeta llamada algebraTP)
