@@ -1,13 +1,17 @@
+Primera vez..
+
 -Te moves a tu carpeta te TP Algebra
-
 git init                  ---> Inicia git en esa carpeta
-git clone                 ---> Lo usas la primera vez para bajar la repo (se baja una carpeta llamada algebraTP)
+git clone https://github.com/javivera/algebraTP --> Bajar la repo (se baja una carpeta llamada algebraTP)
 cd algebraTP              
-git status                ---> Te dice que cambios hiciste desde que empezaste
 
-Como actualizar la repo (Ya estando en la carpeta con git iniciado)
-
+Como actualizar la repo..
+cd algebraTP              ---> Anda al directorio donde trabajas la reop
+git init                  ---> Inicia git , solo hace falta si apagaste la pc en algun momento
 git commit -m "comentario"---> Prepara la repo para ser actualizada (es reversible)Comentario es sobre lo que actualizaste(breve)
 git push origin master    ---> Sube el archivo al repositorio (ATENCION! esto es al MASTER!)  
 
 Aclaracion: git push es algo que haces si esta SUPER seguro que lo que hiciste esta muy bien , todos lo aceptamos , etc
+
+Comandos Utiles
+git status                ---> Te dice que cambios hiciste desde que empezaste
