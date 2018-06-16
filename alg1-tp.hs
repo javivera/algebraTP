@@ -72,6 +72,15 @@ taf2 = [ [Derecha,       Abajo, Abajo],
          [Arriba,    Izquierda, Abajo],
          [Izquierda, Izquierda, Izquierda] ]
 
+------------------- Funciones Auxiliares agregadas por nosotros -------------------
+
+--Recibe indice actual y devuelve el proximo indice en base a la direccion del desplazamiento
+sigIndiceSegunCamino :: Posicion -> Desplazamiento -> Posicion
+sigIndiceSegunCamino indice direccion | direccion == Derecha = (fst indice , (snd indice)+1) 
+                                      | direccion == Izquierda = (fst indice , (snd indice)-1) 
+                                      | direccion == Abajo = ( (fst indice)+1 , snd indice) 
+                                      | direccion == Arriba =( (fst indice)-1 , snd indice)
+
 -------------------- Camino valido -------------------- 
 caminoValidoAux :: Tablero a -> Camino -> Posicion -> Bool
 caminoValidoAux tablero camino indice | camino == [] = posValida tablero indice
@@ -80,13 +89,18 @@ caminoValidoAux tablero camino indice | camino == [] = posValida tablero indice
 
 caminoValido :: Tablero a -> Camino -> Bool
 caminoValido tablero camino = caminoValidoAux tablero camino (1,1)
-
---Recibe indice actual y devuelve el proximo indice en base a la direccion del desplazamiento
-sigIndiceSegunCamino :: Posicion -> Desplazamiento -> Posicion
-sigIndiceSegunCamino indice direccion | direccion == Derecha = (fst indice , (snd indice)+1) 
-                                      | direccion == Izquierda = (fst indice , (snd indice)-1) 
-                                      | direccion == Abajo = ( (fst indice)+1 , snd indice) 
-                                      | direccion == Arriba =( (fst indice)-1 , snd indice) 
 -------------------- Fin Camino valido --------------------
 
-asdasd
+
+
+-------------------- Camino de Salida --------------------
+caminoDeSalidaAux :: CampoMinado -> Camino -> Posicion -> Bool
+caminoDeSalidaAux campoMinado camino indice | not (posValida campoMinado indice) = error " Camino no válido..." 
+                                            | camino == [] = not (valor campoMinado indice)
+                                            | valor campoMinado indice == True = False
+                                            | otherwise = caminoDeSalidaAux campoMinado (tail camino) (sigIndiceSegunCamino indice (head camino))  
+
+caminoDeSalida :: CampoMinado -> Camino -> Bool
+caminoDeSalida campoMinado camino = caminoDeSalidaAux campoMinado camino (1,1)
+-------------------- Camino de Salida --------------------
+
