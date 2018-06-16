@@ -8,6 +8,6 @@ git status                ---> Te dice que cambios hiciste desde que empezaste
 Como actualizar la repo (Ya estando en la carpeta con git iniciado)
 
 git commit -m "comentario"---> Prepara la repo para ser actualizada (es reversible)Comentario es sobre lo que actualizaste(breve)
-git push                  ---> Sube el archivo al repositorio (ATENCION! esto es al MASTER!)  
+git push origin master    ---> Sube el archivo al repositorio (ATENCION! esto es al MASTER!)  
 
 Aclaracion: git push es algo que haces si esta SUPER seguro que lo que hiciste esta muy bien , todos lo aceptamos , etc
