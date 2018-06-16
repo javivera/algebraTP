@@ -88,3 +88,5 @@ sigIndiceSegunCamino indice direccion | direccion == Derecha = (fst indice , (sn
                                       | direccion == Abajo = ( (fst indice)+1 , snd indice) 
                                       | direccion == Arriba =( (fst indice)-1 , snd indice) 
 -------------------- Fin Camino valido --------------------
+
+asdasd
