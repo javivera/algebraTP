@@ -72,20 +72,19 @@ taf2 = [ [Derecha,       Abajo, Abajo],
          [Arriba,    Izquierda, Abajo],
          [Izquierda, Izquierda, Izquierda] ]
 
-------------------- Funciones Auxiliares agregadas por nosotros -------------------
-
---Recibe indice actual y devuelve el proximo indice en base a la direccion del desplazamiento
-sigIndiceSegunCamino :: Posicion -> Desplazamiento -> Posicion
-sigIndiceSegunCamino indice direccion | direccion == Derecha = (fst indice , (snd indice)+1) 
-                                      | direccion == Izquierda = (fst indice , (snd indice)-1) 
-                                      | direccion == Abajo = ( (fst indice)+1 , snd indice) 
-                                      | direccion == Arriba =( (fst indice)-1 , snd indice)
-
 -------------------- Camino valido -------------------- 
+--Recibe indice actual y devuelve el proximo indice en base a la direccion del desplazamiento
+sigIndiceSegunCamino :: Posicion -> Camino -> Posicion
+sigIndiceSegunCamino indice camino | head camino == Derecha = (fst indice , (snd indice)+1) 
+                                   | head camino == Izquierda = (fst indice , (snd indice)-1) 
+                                   | head camino == Abajo = ( (fst indice)+1 , snd indice) 
+                                   | head camino == Arriba =( (fst indice)-1 , snd indice)
+
+
 caminoValidoAux :: Tablero a -> Camino -> Posicion -> Bool
 caminoValidoAux tablero camino indice | camino == [] = posValida tablero indice
                                       | posValida tablero indice == False = False
-                                      | otherwise = caminoValidoAux tablero (tail camino) (sigIndiceSegunCamino indice (head camino))
+                                      | otherwise = caminoValidoAux tablero (tail camino) (sigIndiceSegunCamino indice  camino)
 
 caminoValido :: Tablero a -> Camino -> Bool
 caminoValido tablero camino = caminoValidoAux tablero camino (1,1)
@@ -98,9 +97,25 @@ caminoDeSalidaAux :: CampoMinado -> Camino -> Posicion -> Bool
 caminoDeSalidaAux campoMinado camino indice | not (posValida campoMinado indice) = error " Camino no válido..." 
                                             | camino == [] = not (valor campoMinado indice)
                                             | valor campoMinado indice == True = False
-                                            | otherwise = caminoDeSalidaAux campoMinado (tail camino) (sigIndiceSegunCamino indice (head camino))  
+                                            | otherwise = caminoDeSalidaAux campoMinado (tail camino) (sigIndiceSegunCamino indice camino)  
 
 caminoDeSalida :: CampoMinado -> Camino -> Bool
 caminoDeSalida campoMinado camino = caminoDeSalidaAux campoMinado camino (1,1)
 -------------------- Camino de Salida --------------------
 
+-------------------- Camino de Salida sin Repetidos--------------------
+indiceEnLista :: Posicion -> [Posicion] -> Bool
+indiceEnLista indice listaI | listaI == [] = False
+                            | indice == head(listaI) = True
+                            | otherwise = indiceEnLista indice (tail listaI)
+
+caminoDeSalidaSinRepetidosAux :: CampoMinado -> Camino -> Posicion -> [Posicion] -> Bool
+caminoDeSalidaSinRepetidosAux campoMinado camino indice listaI | not (posValida campoMinado indice) = error " Camino no válido..."
+                                                               | indiceEnLista indice listaI == True = False
+                                                               | camino == [] = not (valor campoMinado indice)
+                                                               | valor campoMinado indice == True = False
+                                                               | otherwise = caminoDeSalidaSinRepetidosAux campoMinado (tail camino) (sigIndiceSegunCamino indice camino) ( indice : listaI)             
+
+caminoDeSalidaSinRepetidos :: CampoMinado -> Camino -> Bool
+caminoDeSalidaSinRepetidos campoMinado camino = caminoDeSalidaSinRepetidosAux campoMinado camino (1,1) []
+-------------------- Camino de Salida sin Repetidos--------------------
