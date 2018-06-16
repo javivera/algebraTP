@@ -1,8 +1,12 @@
-git clone                 ---> Te pone al dia , SIEMPRE arrancar con este comando
+-Te moves a tu carpeta te TP Algebra
+
+git init                  ---> Inicia git en esa carpeta
+git clone                 ---> Lo usas la primera vez para bajar la repo
 git status                ---> Te dice que cambios hiciste desde que empezaste
 
 Como actualizar la repo
-git add "nombre archivo"  ---> Prepara el archivo para cargarlo
-git commit -m "comentario"---> 
-git push                  ---> Sube el archivo al repositorio (ATENCION! esto es al MASTER!)          
+
+git commit -m "comentario"---> Prepara la repo para ser actualizada (es reversible)
+git push                  ---> Sube el archivo al repositorio (ATENCION! esto es al MASTER!)  
+
 Aclaracion: git commit es algo que haces si esta SUPER seguro que lo que hiciste esta muy bien , todos lo aceptamos , etc
