@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 -- Nombre y LU/DNI de los integrantes del grupo:
--- INTEGRANTE 1:
--- INTEGRANTE 2:
--- INTEGRANTE 3:
+-- INTEGRANTE 1: Irina Gallo
+-- INTEGRANTE 2: Juan Diego 
+-- INTEGRANTE 3: Javier Vera
 -----------------------------------------------------------------------
 
 data Desplazamiento = Arriba | Abajo | Izquierda | Derecha deriving (Show, Eq)
@@ -52,6 +52,7 @@ contarDesplazamientosVerticales (x:xs) | esVertical x = 1 + resto
 camino1 = [Derecha, Abajo, Izquierda, Arriba, Abajo, Abajo, Derecha, Derecha]
 camino2 = [Derecha, Abajo, Derecha, Abajo]
 camino3 = [Derecha, Abajo, Derecha, Izquierda, Derecha, Abajo]
+camino4 = [Derecha,Abajo,Derecha,Abajo,Derecha] -- Hecho por Javi
 
 -- CampoMinado de prueba.
 campo1 :: CampoMinado
@@ -70,3 +71,21 @@ taf2 :: TableroAF
 taf2 = [ [Derecha,       Abajo, Abajo],
          [Arriba,    Izquierda, Abajo],
          [Izquierda, Izquierda, Izquierda] ]
+
+-------------------- Camino valido -------------------- 
+caminoValidoAux :: Tablero a -> Camino -> Posicion -> Bool
+caminoValidoAux tablero camino indice | camino == [] = posValida tablero indice
+                                      | posValida tablero indice == False = False
+                                      | otherwise = caminoValidoAux tablero (tail camino) (sigIndiceSegunCamino indice (head camino))
+
+caminoValido :: Tablero a -> Camino -> Bool
+caminoValido tablero camino = caminoValidoAux tablero camino (1,1)
+
+--Recibe indice actual y devuelve el proximo indice en base a la direccion del desplazamiento
+sigIndiceSegunCamino :: Posicion -> Desplazamiento -> Posicion
+sigIndiceSegunCamino indice direccion | direccion == Derecha = (fst indice , (snd indice)+1) 
+                                      | direccion == Izquierda = (fst indice , (snd indice)-1) 
+                                      | direccion == Abajo = ( (fst indice)+1 , snd indice) 
+                                      | direccion == Arriba =( (fst indice)-1 , snd indice) 
+-------------------- Fin Camino valido --------------------
+
