@@ -1,6 +1,8 @@
 git clone                 ---> Te pone al dia , SIEMPRE arrancar con este comando
 git status                ---> Te dice que cambios hiciste desde que empezaste
+
+Como actualizar la repo
 git add "nombre archivo"  ---> Prepara el archivo para cargarlo
-git commit -m "comentario"---> Sube el archivo al repositorio (ATENCION! esto es al MASTER!)
-git push
+git commit -m "comentario"---> 
+git push                  ---> Sube el archivo al repositorio (ATENCION! esto es al MASTER!)          
 Aclaracion: git commit es algo que haces si esta SUPER seguro que lo que hiciste esta muy bien , todos lo aceptamos , etc
