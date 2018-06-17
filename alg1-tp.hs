@@ -95,7 +95,8 @@ caminoValido tablero camino = caminoValidoAux tablero camino (1,1)
 -------------------- Camino de Salida --------------------
 caminoDeSalidaAux :: CampoMinado -> Camino -> Posicion -> Bool
 caminoDeSalidaAux campoMinado camino indice | not (posValida campoMinado indice) = False 
-                                            | camino == [] = not (valor campoMinado indice)
+                                            | camino == [] && indice /= (tamano campoMinado,tamano campoMinado) = False 
+                                            | camino == [] = not (valor campoMinado indice) 
                                             | valor campoMinado indice == True = False
                                             | otherwise = caminoDeSalidaAux campoMinado (tail camino) (sigIndiceSegunCamino indice camino)  
 
@@ -127,8 +128,8 @@ salidaEnKDespAux listaCaminosPosibles tablero | listaCaminosPosibles == [] = []
                                               | caminoDeSalida tablero (head listaCaminosPosibles) == False = salidaEnKDespAux (tail listaCaminosPosibles) tablero 
                                               | otherwise = head listaCaminosPosibles : salidaEnKDespAux (tail listaCaminosPosibles) tablero
  
-salidaEnKDesp :: CampoMinado -> Integer -> Conjunto Camino
-salidaEnKDesp campo pasos =  salidaEnKDespAux (variaciones pasos [Arriba,Abajo,Izquierda,Derecha]) campo
+salidasEnKDesp :: CampoMinado -> Integer -> Conjunto Camino
+salidasEnKDesp campo pasos =  salidaEnKDespAux (variaciones pasos [Arriba,Abajo,Izquierda,Derecha]) campo
 
 variaciones :: Integer -> Camino -> [Camino]
 variaciones n cs
