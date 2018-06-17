@@ -94,7 +94,7 @@ caminoValido tablero camino = caminoValidoAux tablero camino (1,1)
 
 -------------------- Camino de Salida --------------------
 caminoDeSalidaAux :: CampoMinado -> Camino -> Posicion -> Bool
-caminoDeSalidaAux campoMinado camino indice | not (posValida campoMinado indice) = error " Camino no válido..." 
+caminoDeSalidaAux campoMinado camino indice | not (posValida campoMinado indice) = False 
                                             | camino == [] = not (valor campoMinado indice)
                                             | valor campoMinado indice == True = False
                                             | otherwise = caminoDeSalidaAux campoMinado (tail camino) (sigIndiceSegunCamino indice camino)  
@@ -110,7 +110,7 @@ indiceEnLista indice listaI | listaI == [] = False
                             | otherwise = indiceEnLista indice (tail listaI)
 
 caminoDeSalidaSinRepetidosAux :: CampoMinado -> Camino -> Posicion -> [Posicion] -> Bool
-caminoDeSalidaSinRepetidosAux campoMinado camino indice listaI | not (posValida campoMinado indice) = error " Camino no válido..."
+caminoDeSalidaSinRepetidosAux campoMinado camino indice listaI | not (posValida campoMinado indice) = False
                                                                | indiceEnLista indice listaI == True = False
                                                                | camino == [] = not (valor campoMinado indice)
                                                                | valor campoMinado indice == True = False
@@ -119,3 +119,19 @@ caminoDeSalidaSinRepetidosAux campoMinado camino indice listaI | not (posValida 
 caminoDeSalidaSinRepetidos :: CampoMinado -> Camino -> Bool
 caminoDeSalidaSinRepetidos campoMinado camino = caminoDeSalidaSinRepetidosAux campoMinado camino (1,1) []
 -------------------- Camino de Salida sin Repetidos--------------------
+
+-------------------- Salida en K Desplazamientos --------------------
+salidaEnKDespAux ::  Conjunto Camino -> CampoMinado -> Conjunto Camino
+salidaEnKDespAux listaCaminosPosibles tablero | listaCaminosPosibles == [] = []
+                                              | caminoValido tablero (head listaCaminosPosibles) == False = salidaEnKDespAux (tail listaCaminosPosibles) tablero
+                                              | caminoDeSalida tablero (head listaCaminosPosibles) == False = salidaEnKDespAux (tail listaCaminosPosibles) tablero 
+                                              | otherwise = head listaCaminosPosibles : salidaEnKDespAux (tail listaCaminosPosibles) tablero
+ 
+salidaEnKDesp :: CampoMinado -> Integer -> Conjunto Camino
+salidaEnKDesp campo pasos =  salidaEnKDespAux (variaciones pasos [Arriba,Abajo,Izquierda,Derecha]) campo
+
+variaciones :: Integer -> Camino -> [Camino]
+variaciones n cs
+ | n <= 0 = []
+ | n == 1 = map pure cs --  map (\c -> [c]) cs
+ | otherwise = variaciones (n-1) cs >>= \ps -> map (:ps) cs
