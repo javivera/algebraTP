@@ -148,4 +148,3 @@ recorridoAux tablero indice limitador | limitador == 10 = [valor tablero indice]
                                       | not (posValida tablero (sigIndiceSegunCaminoAF tablero (valor tablero indice))) = [valor tablero indice]
                                       | otherwise = (valor tablero indice) : recorridoAux tablero (sigIndiceSegunCaminoAF indice (valor tablero indice)) (limitador-1)
 
------esto es una prueba
