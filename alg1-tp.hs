@@ -153,4 +153,8 @@ recorridoAux tablero indice limitador | limitador == 10 = [valor tablero indice]
 
 
 
+
 quiero agergar esto 
+
+y yo esto!
+
