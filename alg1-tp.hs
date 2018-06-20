@@ -147,8 +147,9 @@ sigIndiceSegunCaminoAF indice tablero |valor tablero indice == Derecha = (fst in
                                      
                                      
 recorridoAux :: TableroAF -> Posicion -> [Posicion] -> [Posicion]
-recorridoAux tablero indice listaPosiciones | elem indice listaPosiciones = listaPosiciones
-                                            | not (posValida tablero (sigIndiceSegunCaminoAF indice tablero)) = indice : listaPosiciones
+recorridoAux tablero indice listaPosiciones | not (posValida tablero (sigIndiceSegunCaminoAF indice tablero)) = indice : listaPosiciones
                                             | otherwise = recorridoAux tablero (sigIndiceSegunCaminoAF indice tablero) (indice : listaPosiciones)
 
+recorrido :: TableroAF -> Posicion -> [Posicion]
+recorrido tablero posicionInicial = recorridoAux tablero posicionInicial []
 
