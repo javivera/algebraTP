@@ -155,7 +155,8 @@ escapaDelTablero :: TableroAF -> Posicion -> Bool
 escapaDelTablero tablero posicionInicial | not (posValida tablero (sigIndiceSegunCaminoAF posicionInicial tablero)) = True
                                          | otherwise = escapaDelTablero tablero (sigIndiceSegunCaminoAF posicionInicial tablero) 
 
-
+--------------------------No me acuerdo como usar el commit, asique hice push nomas, de arriba no cambie nada.
+--------------------------Igual, deberiamos cambiar "indice" por "pos" y creo que "campoMinado" por "cm"
 --nuevoTableroaux :: TableroAF -> Posicion -> TableroAF
 --nuevoTableroaux tablero indice | indice == (1,1)
 
