@@ -73,18 +73,20 @@ taf2 = [ [Derecha,       Abajo, Abajo],
          [Izquierda, Izquierda, Izquierda] ]
 
 -------------------- Camino valido -------------------- 
---Recibe indice actual y devuelve el proximo indice en base a la direccion del desplazamiento
-sigIndiceSegunCamino :: Posicion -> Camino -> Posicion
-sigIndiceSegunCamino indice camino | head camino == Derecha = (fst indice , (snd indice)+1) 
-                                   | head camino == Izquierda = (fst indice , (snd indice)-1) 
-                                   | head camino == Abajo = ( (fst indice)+1 , snd indice) 
-                                   | head camino == Arriba =( (fst indice)-1 , snd indice)
+--Recibe posición actual y devuelve la proxima posición en base a la direccion del desplazamiento
+nuevaPos :: Desplazamiento -> Posicion -> Posicion
+nuevaPos Arriba    (i,j) = (i-1,j)
+nuevaPos Abajo     (i,j) = (i+1,j)
+nuevaPos Derecha   (i,j) = (i,j+1)
+nuevaPos Izquierda (i,j) = (i,j-1)
 
+sigPosSegunCamino :: Posicion -> Camino -> Posicion
+sigPosSegunCamino pos (x:camino) = nuevaPos x pos
 
 caminoValidoAux :: Tablero a -> Camino -> Posicion -> Bool
-caminoValidoAux tablero camino indice | camino == [] = posValida tablero indice
-                                      | posValida tablero indice == False = False
-                                      | otherwise = caminoValidoAux tablero (tail camino) (sigIndiceSegunCamino indice  camino)
+caminoValidoAux tablero camino pos | camino == [] = posValida tablero pos
+                                      | posValida tablero pos == False = False
+                                      | otherwise = caminoValidoAux tablero (tail camino) (sigPosSegunCamino pos  camino)
 
 caminoValido :: Tablero a -> Camino -> Bool
 caminoValido tablero camino = caminoValidoAux tablero camino (1,1)
@@ -94,28 +96,28 @@ caminoValido tablero camino = caminoValidoAux tablero camino (1,1)
 
 -------------------- Camino de Salida --------------------
 caminoDeSalidaAux :: CampoMinado -> Camino -> Posicion -> Bool
-caminoDeSalidaAux campoMinado camino indice | not (posValida campoMinado indice) = False 
-                                            | camino == [] && indice /= (tamano campoMinado,tamano campoMinado) = False 
-                                            | camino == [] = not (valor campoMinado indice) 
-                                            | valor campoMinado indice == True = False
-                                            | otherwise = caminoDeSalidaAux campoMinado (tail camino) (sigIndiceSegunCamino indice camino)  
+caminoDeSalidaAux campoMinado camino pos | not (posValida campoMinado pos) = False 
+                                            | camino == [] && pos /= (tamano campoMinado,tamano campoMinado) = False 
+                                            | camino == [] = not (valor campoMinado pos) 
+                                            | valor campoMinado pos == True = False
+                                            | otherwise = caminoDeSalidaAux campoMinado (tail camino) (sigPosSegunCamino pos camino)  
 
 caminoDeSalida :: CampoMinado -> Camino -> Bool
 caminoDeSalida campoMinado camino = caminoDeSalidaAux campoMinado camino (1,1)
 -------------------- Camino de Salida --------------------
 
 -------------------- Camino de Salida sin Repetidos--------------------
-indiceEnLista :: Posicion -> [Posicion] -> Bool
-indiceEnLista indice listaI | listaI == [] = False
-                            | indice == head(listaI) = True
-                            | otherwise = indiceEnLista indice (tail listaI)
+posEnLista :: Posicion -> [Posicion] -> Bool
+posEnLista pos listaI | listaI == [] = False
+                            | pos == head(listaI) = True
+                            | otherwise = posEnLista pos (tail listaI)
 
 caminoDeSalidaSinRepetidosAux :: CampoMinado -> Camino -> Posicion -> [Posicion] -> Bool
-caminoDeSalidaSinRepetidosAux campoMinado camino indice listaI | not (posValida campoMinado indice) = False
-                                                               | indiceEnLista indice listaI == True = False
-                                                               | camino == [] = not (valor campoMinado indice)
-                                                               | valor campoMinado indice == True = False
-                                                               | otherwise = caminoDeSalidaSinRepetidosAux campoMinado (tail camino) (sigIndiceSegunCamino indice camino) ( indice : listaI)             
+caminoDeSalidaSinRepetidosAux campoMinado camino pos listaI | not (posValida campoMinado pos) = False
+                                                               | posEnLista pos listaI == True = False
+                                                               | camino == [] = not (valor campoMinado pos)
+                                                               | valor campoMinado pos == True = False
+                                                               | otherwise = caminoDeSalidaSinRepetidosAux campoMinado (tail camino) (sigPosSegunCamino pos camino) ( pos : listaI)             
 
 caminoDeSalidaSinRepetidos :: CampoMinado -> Camino -> Bool
 caminoDeSalidaSinRepetidos campoMinado camino = caminoDeSalidaSinRepetidosAux campoMinado camino (1,1) []
@@ -138,13 +140,13 @@ variaciones n cs
  | otherwise = variaciones (n-1) cs >>= \ps -> map (:ps) cs
 -------------------- Salida en K Desplazamientos --------------------
 
-sigIndiceSegunCaminoAF :: Posicion -> Desplazamiento -> Posicion
-sigIndiceSegunCaminoAF indice camino |camino == Derecha = (fst indice , (snd indice)+1) 
-                                     |camino == Izquierda = (fst indice , (snd indice)-1) 
-                                     |camino == Abajo = ( (fst indice)+1 , snd indice) 
-                                     |camino == Arriba =( (fst indice)-1 , snd indice)
+sigPosSegunCaminoAF :: Posicion -> Desplazamiento -> Posicion
+sigPosSegunCaminoAF pos camino |camino == Derecha = (fst pos , (snd pos)+1) 
+                                     |camino == Izquierda = (fst pos , (snd pos)-1) 
+                                     |camino == Abajo = ( (fst pos)+1 , snd pos) 
+                                     |camino == Arriba =( (fst pos)-1 , snd pos)
 recorridoAux :: TableroAF -> Posicion -> Integer -> [Posicion]
-recorridoAux tablero indice limitador | limitador == 10 = [valor tablero indice]
-                                      | not (posValida tablero (sigIndiceSegunCaminoAF tablero (valor tablero indice))) = [valor tablero indice]
-                                      | otherwise = (valor tablero indice) : recorridoAux tablero (sigIndiceSegunCaminoAF indice (valor tablero indice)) (limitador-1)
+recorridoAux tablero pos limitador | limitador == 10 = [valor tablero pos]
+                                      | not (posValida tablero (sigPosSegunCaminoAF tablero (valor tablero pos))) = [valor tablero pos]
+                                      | otherwise = (valor tablero pos) : recorridoAux tablero (sigPosSegunCaminoAF pos (valor tablero pos)) (limitador-1)
 
