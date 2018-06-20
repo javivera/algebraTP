@@ -149,3 +149,5 @@ recorridoAux tablero indice limitador | limitador == 10 = [valor tablero indice]
                                       | otherwise = (valor tablero indice) : recorridoAux tablero (sigIndiceSegunCaminoAF indice (valor tablero indice)) (limitador-1)
 
 holas que tal 
+
+wacho peoal
