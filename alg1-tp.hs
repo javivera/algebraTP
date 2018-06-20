@@ -151,3 +151,5 @@ recorridoAux tablero indice limitador | limitador == 10 = [valor tablero indice]
 holas que tal 
 
 wacho peoal
+
+vo so loco dos
