@@ -136,7 +136,15 @@ variaciones n cs
  | n <= 0 = []
  | n == 1 = map pure cs --  map (\c -> [c]) cs
  | otherwise = variaciones (n-1) cs >>= \ps -> map (:ps) cs
+-------------------- Salida en K Desplazamientos --------------------
 
+sigIndiceSegunCaminoAF :: Posicion -> Desplazamiento -> Posicion
+sigIndiceSegunCaminoAF indice camino |camino == Derecha = (fst indice , (snd indice)+1) 
+                                     |camino == Izquierda = (fst indice , (snd indice)-1) 
+                                     |camino == Abajo = ( (fst indice)+1 , snd indice) 
+                                     |camino == Arriba =( (fst indice)-1 , snd indice)
+recorridoAux :: TableroAF -> Posicion -> Integer -> [Posicion]
+recorridoAux tablero indice limitador | limitador == 10 = [valor tablero indice]
+                                      | not (posValida tablero (sigIndiceSegunCaminoAF tablero (valor tablero indice))) = [valor tablero indice]
+                                      | otherwise = (valor tablero indice) : recorridoAux tablero (sigIndiceSegunCaminoAF indice (valor tablero indice)) (limitador-1)
 
-
----asdasd
