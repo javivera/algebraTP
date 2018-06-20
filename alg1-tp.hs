@@ -156,3 +156,23 @@ escapaDelTablero tablero posicionInicial | not (posValida tablero (sigIndiceSegu
                                          | otherwise = escapaDelTablero tablero (sigIndiceSegunCaminoAF posicionInicial tablero) 
 
 
+--nuevoTableroaux :: TableroAF -> Posicion -> TableroAF
+--nuevoTableroaux tablero indice | indice == (1,1)
+
+--recibis la posicion, (1,1)
+--		     (1,_)
+--                     (_,1)
+--		     otherwise
+
+--agregue valor en posicion k de una lista,
+--insertar [[asd]] 
+
+-- Modifica el desplazamiento en (i,j), en el sentido de las agujas del reloj. (Arriba,Derecha,Abajo,Izquierda,Arriba..)
+valor2 :: TableroAF -> Posicion -> Desplazamiento
+valor2 t (i,j) | desp == Arriba    = Derecha
+	       | desp == Derecha   = Abajo
+               | desp == Abajo     = Izquierda
+               | desp == Izquierda = Arriba
+	       where desp = valor t (i,j)
+
+-- Ver --> https://code.i-harness.com/es/q/594e32
