@@ -136,3 +136,7 @@ variaciones n cs
  | n <= 0 = []
  | n == 1 = map pure cs --  map (\c -> [c]) cs
  | otherwise = variaciones (n-1) cs >>= \ps -> map (:ps) cs
+
+
+
+---asdasd
