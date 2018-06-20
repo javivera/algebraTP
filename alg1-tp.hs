@@ -153,3 +153,8 @@ recorridoAux tablero indice listaPosiciones | not (posValida tablero (sigIndiceS
 recorrido :: TableroAF -> Posicion -> [Posicion]
 recorrido tablero posicionInicial = recorridoAux tablero posicionInicial []
 
+escapaDelTablero :: TableroAF -> Posicion -> Bool
+escapaDelTablero tablero posicionInicial | not (posValida tablero (sigIndiceSegunCaminoAF posicionInicial tablero)) = True
+                                         | otherwise = escapaDelTablero tablero (sigIndiceSegunCaminoAF posicionInicial tablero) 
+
+
