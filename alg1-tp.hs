@@ -144,17 +144,11 @@ sigIndiceSegunCaminoAF indice camino |camino == Derecha = (fst indice , (snd ind
                                      |camino == Abajo = ( (fst indice)+1 , snd indice) 
                                      |camino == Arriba =( (fst indice)-1 , snd indice)
 
-                                     vo so loco
+                                     
                                      
 recorridoAux :: TableroAF -> Posicion -> Integer -> [Posicion]
 recorridoAux tablero indice limitador | limitador == 10 = [valor tablero indice]
                                       | not (posValida tablero (sigIndiceSegunCaminoAF tablero (valor tablero indice))) = [valor tablero indice]
                                       | otherwise = (valor tablero indice) : recorridoAux tablero (sigIndiceSegunCaminoAF indice (valor tablero indice)) (limitador-1)
 
-
-
-
-quiero agergar esto 
-
-y yo esto!
 
