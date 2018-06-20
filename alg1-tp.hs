@@ -138,17 +138,17 @@ variaciones n cs
  | otherwise = variaciones (n-1) cs >>= \ps -> map (:ps) cs
 -------------------- Salida en K Desplazamientos --------------------
 
-sigIndiceSegunCaminoAF :: Posicion -> Desplazamiento -> Posicion
-sigIndiceSegunCaminoAF indice camino |camino == Derecha = (fst indice , (snd indice)+1) 
-                                     |camino == Izquierda = (fst indice , (snd indice)-1) 
-                                     |camino == Abajo = ( (fst indice)+1 , snd indice) 
-                                     |camino == Arriba =( (fst indice)-1 , snd indice)
+sigIndiceSegunCaminoAF :: Posicion -> TableroAF -> Posicion
+sigIndiceSegunCaminoAF indice tablero |valor tablero indice == Derecha = (fst indice , (snd indice)+1) 
+                                      |valor tablero indice == Izquierda = (fst indice , (snd indice)-1) 
+                                      |valor tablero indice == Abajo = ( (fst indice)+1 , snd indice) 
+                                      |valor tablero indice == Arriba =( (fst indice)-1 , snd indice)
 
                                      
                                      
-recorridoAux :: TableroAF -> Posicion -> Integer -> [Posicion]
-recorridoAux tablero indice limitador | limitador == 10 = [valor tablero indice]
-                                      | not (posValida tablero (sigIndiceSegunCaminoAF tablero (valor tablero indice))) = [valor tablero indice]
-                                      | otherwise = (valor tablero indice) : recorridoAux tablero (sigIndiceSegunCaminoAF indice (valor tablero indice)) (limitador-1)
+recorridoAux :: TableroAF -> Posicion -> [Posicion] -> [Posicion]
+recorridoAux tablero indice listaPosiciones | elem indice listaPosiciones = listaPosiciones	
+                                            | not (posValida tablero (sigIndiceSegunCaminoAF tablero (valor tablero indice))) = [valor tablero indice]
+                                            | otherwise = recorridoAux tablero (sigIndiceSegunCaminoAF indice tablero) (indice : listaPosiciones)
 
 
