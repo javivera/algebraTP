@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 -- Nombre y LU/DNI de los integrantes del grupo:
--- INTEGRANTE 1: Irina Gallo
--- INTEGRANTE 2: Juan Diego 
+-- INTEGRANTE 1: Irina Gallina
+-- INTEGRANTE 2: Juan Diego Figari
 -- INTEGRANTE 3: Javier Vera
 -----------------------------------------------------------------------
 
@@ -177,3 +177,25 @@ valor2 t (i,j) | desp == Arriba    = Derecha
 	       where desp = valor t (i,j)
 
 -- Ver --> https://code.i-harness.com/es/q/594e32
+
+----------- (Iri) De arriba solo arreglé los nombres. 
+----agrego unas funciones auxiliares para el ultimo ejercicio
+-- Gira desplazamiento en lista de listas:
+
+-- Recibe un desplazamiento, y lo gira sentido horario (arriba, derecha, abajo, izquierda...)
+girar :: Desplazamiento -> Desplazamiento
+girar Arriba = Derecha
+girar Derecha = Abajo
+girar Abajo = Izquierda
+girar Izquierda = Arriba
+
+--Recibe un Camino y un valor "K". Gira el desplazamiento (en sentido horario) que está en K: 
+giraEnCamino :: Camino -> Integer -> Camino
+giraEnCamino camino 1 = ( girar (head camino) : tail camino )
+giraEnCamino camino k = ( head camino : giraEnCamino (tail camino) (k-1) )
+
+--Recibe un tableroAF y una posición (i,j). Gira el desplazamiento de la posición j (columna) que está en la lista i (fila)
+
+giraEnTableroAF :: TableroAF -> Posicion -> TableroAF
+giraEnTableroAF tablero (1, j) = ( giraEnCamino (head tablero) j : tail tablero )
+giraEnTableroAF tablero (i, j) = ( head tablero : giraEnTableroAF (tail tablero) (i-1, j) )
