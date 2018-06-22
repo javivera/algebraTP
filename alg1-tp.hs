@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 -- Nombre y LU/DNI de los integrantes del grupo:
--- INTEGRANTE 1: Irina Gallo
--- INTEGRANTE 2: Juan Diego 
+-- INTEGRANTE 1: Irina Gallina
+-- INTEGRANTE 2: Juan Diego Figari
 -- INTEGRANTE 3: Javier Vera
 -----------------------------------------------------------------------
 
@@ -72,81 +72,151 @@ taf2 = [ [Derecha,       Abajo, Abajo],
          [Arriba,    Izquierda, Abajo],
          [Izquierda, Izquierda, Izquierda] ]
 
--------------------- Camino valido -------------------- 
---Recibe posición actual y devuelve la proxima posición en base a la direccion del desplazamiento
-nuevaPos :: Desplazamiento -> Posicion -> Posicion
-nuevaPos Arriba    (i,j) = (i-1,j)
-nuevaPos Abajo     (i,j) = (i+1,j)
-nuevaPos Derecha   (i,j) = (i,j+1)
-nuevaPos Izquierda (i,j) = (i,j-1)
 
-sigPosSegunCamino :: Posicion -> Camino -> Posicion
-sigPosSegunCamino pos (x:camino) = nuevaPos x pos
+-------------------- Camino valido --------------------
+--Recibe posición (i,j) y devuelve la nueva posicion en base a la direccion del desplazamiento
+nuevaPos :: Posicion -> Camino -> Posicion
+nuevaPos (i,j) (Derecha   : camino) = (i,j+1)
+nuevaPos (i,j) (Izquierda : camino) = (i,j-1) 
+nuevaPos (i,j) (Abajo     : camino) = (i+1,j) 
+nuevaPos (i,j) (Arriba    : camino) = (i-1,j) 
 
+
+--Recibe un tablero t, camino y posicion pos
 caminoValidoAux :: Tablero a -> Camino -> Posicion -> Bool
-caminoValidoAux tablero camino pos | camino == [] = posValida tablero pos
-                                      | posValida tablero pos == False = False
-                                      | otherwise = caminoValidoAux tablero (tail camino) (sigPosSegunCamino pos  camino)
+caminoValidoAux t camino pos | camino == [] = posValida t pos
+                                   | not (posValida t pos) = False
+                                   | otherwise = caminoValidoAux t (tail camino) (nuevaPos pos  camino)
 
+--Recibe un tablero t, camino
+--Determina si siguiendo el camino se sale del tablero o no
 caminoValido :: Tablero a -> Camino -> Bool
-caminoValido tablero camino = caminoValidoAux tablero camino (1,1)
+caminoValido t camino = caminoValidoAux t camino (1,1)
 -------------------- Fin Camino valido --------------------
 
 
 
 -------------------- Camino de Salida --------------------
+--Recibe un campo minado cm, camino, y una posicion pos
 caminoDeSalidaAux :: CampoMinado -> Camino -> Posicion -> Bool
-caminoDeSalidaAux campoMinado camino pos | not (posValida campoMinado pos) = False 
-                                            | camino == [] && pos /= (tamano campoMinado,tamano campoMinado) = False 
-                                            | camino == [] = not (valor campoMinado pos) 
-                                            | valor campoMinado pos == True = False
-                                            | otherwise = caminoDeSalidaAux campoMinado (tail camino) (sigPosSegunCamino pos camino)  
+caminoDeSalidaAux cm camino pos | not (caminoValido cm camino) = True ---REVISAR---
+--                                | not (posValida cm pos) = False 
+                                | camino == [] && pos /= (tamano cm,tamano cm) = False --Sin camino y sin estar en salida
+                                | camino == [] = not (valor cm pos)  --Sin camino y en salida (implicito)
+                                | valor cm pos == True = False --Posicion == Mina
+                                | otherwise = caminoDeSalidaAux cm (tail camino) (nuevaPos pos camino)
 
+--Determina si pisa o no una mina durante el camino, empezando en el (1,1)
 caminoDeSalida :: CampoMinado -> Camino -> Bool
-caminoDeSalida campoMinado camino = caminoDeSalidaAux campoMinado camino (1,1)
+caminoDeSalida cm camino = caminoDeSalidaAux cm camino (1,1)
 -------------------- Camino de Salida --------------------
 
--------------------- Camino de Salida sin Repetidos--------------------
+
+
+-------------------- Camino de Salida sin Repetidos --------------------
+--Determina si una posicion pos pertenece a la lista de posiciones anteriores a esa, listaI
 posEnLista :: Posicion -> [Posicion] -> Bool
 posEnLista pos listaI | listaI == [] = False
-                            | pos == head(listaI) = True
-                            | otherwise = posEnLista pos (tail listaI)
+                      | pos == head(listaI) = True
+                      | otherwise = posEnLista pos (tail listaI)
+
 
 caminoDeSalidaSinRepetidosAux :: CampoMinado -> Camino -> Posicion -> [Posicion] -> Bool
-caminoDeSalidaSinRepetidosAux campoMinado camino pos listaI | not (posValida campoMinado pos) = False
-                                                               | posEnLista pos listaI == True = False
-                                                               | camino == [] = not (valor campoMinado pos)
-                                                               | valor campoMinado pos == True = False
-                                                               | otherwise = caminoDeSalidaSinRepetidosAux campoMinado (tail camino) (sigPosSegunCamino pos camino) ( pos : listaI)             
+caminoDeSalidaSinRepetidosAux cm camino pos listaI | not (posValida cm pos) = False --Afuera del tablero
+                                                   | posEnLista pos listaI == True = False --Si la posicion pertenece a la lista de posiciones anteriores, repite.
+                                                   | camino == [] = not (valor cm pos) --
+                                                   | valor cm pos == True = False -- Hay una mina en mi posicion.
+                                                   | otherwise = caminoDeSalidaSinRepetidosAux cm (tail camino) (nuevaPos pos camino) ( pos : listaI)
 
 caminoDeSalidaSinRepetidos :: CampoMinado -> Camino -> Bool
-caminoDeSalidaSinRepetidos campoMinado camino = caminoDeSalidaSinRepetidosAux campoMinado camino (1,1) []
--------------------- Camino de Salida sin Repetidos--------------------
+caminoDeSalidaSinRepetidos cm camino = caminoDeSalidaSinRepetidosAux cm camino (1,1) []
+-------------------- Camino de Salida sin Repetidos --------------------
+
+
 
 -------------------- Salida en K Desplazamientos --------------------
-salidaEnKDespAux ::  Conjunto Camino -> CampoMinado -> Conjunto Camino
-salidaEnKDespAux listaCaminosPosibles tablero | listaCaminosPosibles == [] = []
-                                              | caminoValido tablero (head listaCaminosPosibles) == False = salidaEnKDespAux (tail listaCaminosPosibles) tablero
-                                              | caminoDeSalida tablero (head listaCaminosPosibles) == False = salidaEnKDespAux (tail listaCaminosPosibles) tablero 
-                                              | otherwise = head listaCaminosPosibles : salidaEnKDespAux (tail listaCaminosPosibles) tablero
- 
+--Auxiliares de variaciones, reciben desplazamientos desp, conjuntos de caminos, cjtoCamino.
+agregar:: Desplazamiento -> Camino -> Camino
+agregar desp camino = (desp : camino)
+
+agregarATodas:: Desplazamiento -> Conjunto Camino -> Conjunto Camino
+agregarATodas desp []= []
+agregarATodas desp cjtoCamino = (agregar desp (head cjtoCamino)) : (agregarATodas desp (tail cjtoCamino)) 
+
+auxVariaciones:: Camino -> Conjunto Camino -> Conjunto Camino
+auxVariaciones [] cjtoCamino = []
+auxVariaciones camino cjtoCamino = (agregarATodas (head camino) cjtoCamino) ++ auxVariaciones (tail camino) cjtoCamino
+
+variaciones:: Camino -> Integer -> Conjunto Camino
+variaciones camino 0 = [[]]
+variaciones camino n = auxVariaciones camino (variaciones camino (n-1)) 
+
+
+--Recibe una lista de caminos posibles (camino0:caminosRest) y un campo minado cm, devuelve los caminos que llegan bien al final.
+salidasEnKDespAux ::  Conjunto Camino -> CampoMinado -> Conjunto Camino
+salidasEnKDespAux (camino0 : caminoRest) cm | (camino0 : caminoRest) == [] = []  --Caso Base.
+                                            | caminoValido cm camino0 == False = salidasEnKDespAux caminoRest cm --Si camino0 no es valido, chequear el resto de caminos.
+                                            | caminoDeSalida cm camino0 == False = salidasEnKDespAux caminoRest cm --Si con camino0 no llega al final (n,n), chequear el resto de caminos.
+                                            | otherwise = camino0 : salidasEnKDespAux caminoRest cm --si ese camino ES valido, se agrega a la lista, y sigue con el resto de caminos.
+
+--Recibe un campo minado cm y una cantidad de pasos k. Se fija todos los caminos posibles que funcionan con esa cantidad k.
 salidasEnKDesp :: CampoMinado -> Integer -> Conjunto Camino
-salidasEnKDesp campo pasos =  salidaEnKDespAux (variaciones pasos [Arriba,Abajo,Izquierda,Derecha]) campo
-
-variaciones :: Integer -> Camino -> [Camino]
-variaciones n cs
- | n <= 0 = []
- | n == 1 = map pure cs --  map (\c -> [c]) cs
- | otherwise = variaciones (n-1) cs >>= \ps -> map (:ps) cs
+salidasEnKDesp cm k =  salidasEnKDespAux (variaciones [Arriba,Abajo,Izquierda,Derecha] k) cm
 -------------------- Salida en K Desplazamientos --------------------
 
-sigPosSegunCaminoAF :: Posicion -> Desplazamiento -> Posicion
-sigPosSegunCaminoAF pos camino |camino == Derecha = (fst pos , (snd pos)+1) 
-                                     |camino == Izquierda = (fst pos , (snd pos)-1) 
-                                     |camino == Abajo = ( (fst pos)+1 , snd pos) 
-                                     |camino == Arriba =( (fst pos)-1 , snd pos)
-recorridoAux :: TableroAF -> Posicion -> Integer -> [Posicion]
-recorridoAux tablero pos limitador | limitador == 10 = [valor tablero pos]
-                                      | not (posValida tablero (sigPosSegunCaminoAF tablero (valor tablero pos))) = [valor tablero pos]
-                                      | otherwise = (valor tablero pos) : recorridoAux tablero (sigPosSegunCaminoAF pos (valor tablero pos)) (limitador-1)
+
+
+-------------------- Recorrido --------------------
+--Recibe una posicion (i,j) y un tableroAF taf. Mueve la posición segun el desplazamiento que hay en esa posición del tableroAF.
+nuevaPosAF :: Posicion -> TableroAF -> Posicion
+nuevaPosAF (i,j) taf |valor taf (i,j) == Derecha   = (i,j+1)
+                     |valor taf (i,j) == Izquierda = (i,j-1)
+                     |valor taf (i,j) == Abajo     = (i+1,j)
+                     |valor taf (i,j) == Arriba    = (i-1,j)
+
+--Recibe un tableroAF taf y una posicion pos, devuelve una lista que contiene todas las posiciones por la que pasó el AF antes de salir del tablero.
+recorrido :: TableroAF -> Posicion -> [Posicion]
+recorrido taf pos | not (posValida taf (nuevaPosAF pos taf)) = [pos]
+                  | otherwise = pos : recorrido taf (nuevaPosAF pos taf)
+-------------------- Recorrido --------------------
+
+
+
+-------------------- Escapa del tablero --------------------
+escapaDelTablero :: TableroAF -> Posicion -> Bool
+escapaDelTablero t posInicial | not (posValida t (nuevaPosAF posInicial t)) = True
+                                         | otherwise = escapaDelTablero t (nuevaPosAF posInicial t) 
+-------------------- Escapa del tablero --------------------
+
+
+
+-------------------- Cantidad de pasos para salir --------------------
+
+--Recibe un desplazamiento, y lo gira sentido horario (arriba, derecha, abajo, izquierda...).
+girar :: Desplazamiento -> Desplazamiento
+girar Arriba = Derecha
+girar Derecha = Abajo
+girar Abajo = Izquierda
+girar Izquierda = Arriba
+
+--Recibe un Camino y un valor "K". Gira el desplazamiento (en sentido horario) que está en K: 
+giraEnCamino :: Camino -> Integer -> Camino
+giraEnCamino camino 1 = (girar (head camino) : tail camino)
+giraEnCamino camino k = (head camino : giraEnCamino (tail camino) (k-1))
+
+--Recibe un tableroAF taf y una posición (i,j). Gira el desplazamiento de la posición j (columna) que está en la lista i (fila).
+giraEnTableroAF :: TableroAF -> Posicion -> TableroAF
+giraEnTableroAF taf (1,j) = (giraEnCamino (head taf) j : tail taf)
+giraEnTableroAF taf (i,j) = (head taf : giraEnTableroAF (tail taf) (i-1,j))
+
+--Recibe un tableroAF taf y una posicion pos. Devuelve una lista con todas las posiciones hasta salir.
+cantidadDePasosParaSalirAux :: TableroAF -> Posicion -> [Posicion]
+cantidadDePasosParaSalirAux taf pos | not (posValida taf pos) = [] -- not (posValida) significa que está fuera del tablero.
+                                    | otherwise = pos : cantidadDePasosParaSalirAux (giraEnTableroAF taf pos) (nuevaPosAF pos taf)
+
+--Cuenta la cantidad de posiciones que hay en la lista de su funcion auxiliar.
+cantidadDePasosParaSalir :: TableroAF -> Posicion -> Int
+cantidadDePasosParaSalir t pos = length (cantidadDePasosParaSalirAux t pos)
+-------------------- Cantidad de pasos para salir --------------------
+
 
