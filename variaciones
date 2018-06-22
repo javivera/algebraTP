@@ -1,0 +1,25 @@
+--si les parece, cambiamos variaciones del tp por este: 
+
+data Desplazamiento = Arriba | Abajo | Izquierda | Derecha deriving (Show, Eq)
+
+type Conjunto a = [a]
+type Camino = [Desplazamiento]
+type Posicion = (Integer,Integer)
+type Tablero a = [[a]]
+type CampoMinado = Tablero Bool
+type TableroAF = Tablero Desplazamiento
+
+agregar:: Desplazamiento -> Camino -> Camino
+agregar desp camino= (desp:camino)
+
+agregarATodas:: Desplazamiento -> Conjunto Camino -> Conjunto Camino
+agregarATodas desp []= []
+agregarATodas desp cjtocamino = (agregar desp (head cjtocamino)) : (agregarATodas desp (tail cjtocamino)) 
+
+auxVariaciones:: Camino -> Conjunto Camino -> Conjunto Camino
+auxVariaciones [] cjtocamino = []
+auxVariaciones camino cjtocamino = (agregarATodas (head camino) cjtocamino) ++ auxVariaciones (tail camino) cjtocamino
+
+variaciones:: Camino -> Integer -> Conjunto Camino
+variaciones camino 0 = [[]]
+variaciones camino n = auxVariaciones camino (variaciones camino (n-1))
