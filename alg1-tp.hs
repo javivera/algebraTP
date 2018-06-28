@@ -190,7 +190,7 @@ perteneceLista posicion listaPos | listaPos == [] = False
                                  | otherwise = perteneceLista posicion (tail listaPos)
 
 escapaDelTableroAux :: TableroAF -> Posicion -> Posicion -> Int -> Bool
-escapaDelTableroAux taf posMovil posInicial n  | not (posValida taf (nuevaPosAF posInicial taf)) = True
+escapaDelTableroAux taf posMovil posInicial n  | not (posValida taf (nuevaPosAF posMovil taf)) = True
                                                | perteneceLista posMovil (take n (recorrido taf posInicial)) = False 
                                                | otherwise = escapaDelTableroAux taf (nuevaPosAF posMovil taf) posInicial (n+1)
 
