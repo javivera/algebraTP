@@ -150,9 +150,14 @@ recorrido :: TableroAF -> Posicion -> [Posicion]
 recorrido tablero indice | not (posValida tablero (sigIndiceSegunCaminoAF indice tablero)) = [indice]
                          | otherwise = indice : recorrido tablero (sigIndiceSegunCaminoAF indice tablero)
 
+perteneceLista :: Posicion -> [Posicion] -> Bool
+perteneceLista posicion listaPos | listaPos == [] = False
+                                 | posicion == head(listaPos) == True
+                                 | otherwise = perteneceLista posicionInicial (tail listaPos) 
 
 escapaDelTablero :: TableroAF -> Posicion -> Bool
 escapaDelTablero tablero posicionInicial | not (posValida tablero (sigIndiceSegunCaminoAF posicionInicial tablero)) = True
+                                         | 
                                          | otherwise = escapaDelTablero tablero (sigIndiceSegunCaminoAF posicionInicial tablero) 
-
+ 
 
